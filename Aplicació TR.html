@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaluador de Risc de Lesió de Genoll | TDR Prevenció</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent: #238636;
+            --accent-hover: #2ea043;
+            --text-main: #c9d1d9;
+            --text-heading: #ffffff;
+            --border: #30363d;
+            --warning: #d29922;
+            --danger: #f85149;
+            --success: #3fb950;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 750px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        header {
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        header h1 {
+            color: var(--text-heading);
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            color: #8b949e;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-heading);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+        }
+
+        .results {
+            display: none;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .risk-low { background: rgba(63, 185, 80, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .risk-medium { background: rgba(210, 153, 34, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .risk-high { background: rgba(248, 81, 73, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+
+        .recommendations {
+            background: var(--bg-color);
+            padding: 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-top: 15px;
+        }
+
+        .recommendations h3 {
+            color: var(--text-heading);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .recommendations ul {
+            padding-left: 20px;
+        }
+
+        .recommendations li {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            margin-top: 15px;
+        }
+
+        .btn-reset:hover {
+            background: var(--border);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 18px;
+            }
+            header h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Avaluador de Risc de Lesió de Genoll</h1>
+        <p>Eina d'autoavaluació preventiva i recomanació de protocol (FIFA 11+)</p>
+    </header>
+
+    <form id="riskForm">
+        <div class="form-group">
+            <label for="warmupType">Quin tipus d'escalfament fas habitualment abans d'entrenar o jugar?</label>
+            <select id="warmupType" required>
+                <option value="" disabled selected>Selecciona una opció...</option>
+                <option value="none">Gairebé no faig escalfament / Entro directe a jugar</option>
+                <option value="static">Cursa contínua suau i estiraments estàtics</option>
+                <option value="dynamic">Activació dinàmica, moviments d'articulacions i cursa accelerada</option>
+                <option value="complete">Protocol estructurat (mobilitat dinàmica, força, salts i agilitat)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="preventionEx">Inclous exercicis d'estabilitat, core o equilibri monopodal (a una cama)?</label>
+            <select id="preventionEx" required>
+                <option value="" disabled selected>Selecciona una opció...</option>
+                <option value="never">Mai o gairebé mai</option>
+                <option value="sometimes">A vegades (1 cop per setmana)</option>
+                <option value="regularly">De forma regular (2 o més cops per setmana)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="fifaKnowledge">Coneixes o apliques el protocol FIFA 11+?</label>
+            <select id="fifaKnowledge" required>
+                <option value="" disabled selected>Selecciona una opció...</option>
+                <option value="no">No sé què és</option>
+                <option value="know">Sé què és, però no l'aplico mai</option>
+                <option value="apply">Sí, l'apliquem de forma habitual a l'equip</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="fatiguePain">Aterres amb freqüència amb els genolls cap a dins (valg dinàmic) o sents molèsties/fatiga habitualment?</label>
+            <select id="fatiguePain" required>
+                <option value="" disabled selected>Selecciona una opció...</option>
+                <option value="yes">Sí, noti fatiga, molèsties o descontrol al salt/aterratge</option>
+                <option value="sometimes">A vegades al final dels partits o entrenaments intensos</option>
+                <option value="no">No, tinc bon control i no sents molèsties</option>
+            </select>
+        </div>
+
+        <button type="submit">Avaluar el meu perfil de risc</button>
+    </form>
+
+    <div id="results" class="results">
+        <h2>Resultat de l'Avaluació:</h2>
+        <div id="riskBadge" class="risk-badge"></div>
+        <p id="riskDescription"></p>
+
+        <div class="recommendations">
+            <h3>Recomanacions Pràctiques per al teu cas:</h3>
+            <ul id="recommendationsList"></ul>
+        </div>
+
+        <button type="button" class="btn-reset" onclick="resetForm()">Tornar a fer el test</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('riskForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const warmup = document.getElementById('warmupType').value;
+        const prevention = document.getElementById('preventionEx').value;
+        const fifa = document.getElementById('fifaKnowledge').value;
+        const fatigue = document.getElementById('fatiguePain').value;
+
+        let score = 0;
+
+        // Puntuació segons respostes
+        if (warmup === 'none') score += 3;
+        else if (warmup === 'static') score += 2;
+        else if (warmup === 'dynamic') score += 1;
+
+        if (prevention === 'never') score += 3;
+        else if (prevention === 'sometimes') score += 1;
+
+        if (fifa === 'no') score += 2;
+        else if (fifa === 'know') score += 1;
+
+        if (fatigue === 'yes') score += 3;
+        else if (fatigue === 'sometimes') score += 1;
+
+        // Mostrar resultats
+        const resultsDiv = document.getElementById('results');
+        const badge = document.getElementById('riskBadge');
+        const desc = document.getElementById('riskDescription');
+        const list = document.getElementById('recommendationsList');
+
+        list.innerHTML = '';
+        resultsDiv.style.display = 'block';
+
+        if (score >= 7) {
+            badge.textContent = 'Risc Elevat';
+            badge.className = 'risk-badge risk-high';
+            desc.textContent = 'El teu perfil mostra una manca important de treball preventiu neuromuscular i/o factors de fatiga que augmenten l\'estrès sobre l\'articulació del genoll (LCA).';
+            
+            list.innerHTML += '<li><strong>Elimina els estiraments estàtics passius</strong> abans de jugar i substitueix-los per mobilitat articulada i activació dinàmica.</li>';
+            list.innerHTML += '<li><strong>Incorpora el protocol FIFA 11+</strong> com a mínim 2 cops per setmana abans dels entrenaments.</li>';
+            list.innerHTML += '<li><strong>Treballa la propiocepció:</strong> Exercicis d\'equilibri a una cames (monopodal) mantenint la pelvis estable.</li>';
+            list.innerHTML += '<li><strong>Controla el valg de genoll:</strong> Practica salts i aterratges davant d\'un mirall assegurant que el genoll no caigui cap a dins.</li>';
+        } else if (score >= 4) {
+            badge.textContent = 'Risc Moderat';
+            badge.className = 'risk-badge risk-medium';
+            desc.textContent = 'Fas part de l\'escalfament correctament, però falten elements clau de treball de força de core i estabilitat articular per protegir el genoll completament.';
+            
+            list.innerHTML += '<li><strong>Reforça el Core:</strong> Afegeix planxes frontals i laterals a la teva rutina abans d\'entrenar.</li>';
+            list.innerHTML += '<li><strong>Millora la varietat de l\'escalfament:</strong> No et limitis a
